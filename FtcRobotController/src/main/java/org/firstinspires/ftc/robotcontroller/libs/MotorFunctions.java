@@ -15,19 +15,20 @@ public class MotorFunctions {
     /**
      * Constructor initializing the library class with the desired max and min ranges and servo
      * delta
-     * @param motorMin the minimum value of the DC motor
-     * @param motorMax the maximum value of the DC motor
-     * @param servoMin the minimum value of the servo
-     * @param servoMax the maximum value of the servo
-     * @param servoDelta the amount by which to change the servo position
+     * @param pMotorMin the minimum value of the DC motor
+     * @param pMotorMax the maximum value of the DC motor
+     * @param pServoMin the minimum value of the servo
+     * @param pServoMax the maximum value of the servo
+     * @param pServoDelta the amount by which to change the servo position
      */
-    public MotorFunctions(int motorMin, int motorMax, int servoMin, int servoMax, double servoDelta) {
-        this.motorMin = motorMin;
-        this.motorMax = motorMax;
-        this.servoMin = servoMin;
-        this.servoMax = servoMax;
+    public MotorFunctions(int pMotorMin, int pMotorMax, int pServoMin, int pServoMax, double
+            pServoDelta) {
+        motorMin = pMotorMin;
+        motorMax = pMotorMax;
+        servoMin = pServoMin;
+        servoMax = pServoMax;
 
-        this.servoDelta = servoDelta;
+        servoDelta = pServoDelta;
     }
 
     /**
@@ -60,19 +61,52 @@ public class MotorFunctions {
      * @return double servo position
      */
     public static double servo(double position) {
-        position += servoDelta;
         position = Range.clip(position, servoMin, servoMax);
         return position;
     }
 
     /**
-     * Normalizes the servo position
+     * Normalizes the servo position after incrementing based on servo delta
+     * @param currentPosition The current servo position
+     * @return double servo position
+     */
+    public static double servoIncrement(double currentPosition) {
+        currentPosition += servoDelta;
+        currentPosition = Range.clip(currentPosition, servoMin, servoMax);
+        return currentPosition;
+    }
+
+    /**
+     * Normalizes the servo position after decrementing based on servo delta
+     * @param currentPosition The current servo position
+     * @return double servo position
+     */
+    public static double servoDecrement(double currentPosition) {
+        currentPosition -= servoDelta;
+        currentPosition = Range.clip(currentPosition, servoMin, servoMax);
+        return currentPosition;
+    }
+
+    /**
+     * Normalizes the servo position based on servo delta
      * @param position The current servo position
      * @param servoDelta the amount the current servo changes
      * @return double servo position
      */
     public static double servo(double position, double servoDelta) {
         position += servoDelta;
+        position = Range.clip(position, servoMin, servoMax);
+        return position;
+    }
+
+    /**
+     * Normalizes the servo position based on a boolean value for decrement or increment
+     * @param position The current servo position
+     * @param servoDelta the amount the current servo changes
+     * @return double servo position
+     */
+    public static double servo(double position, double servoDelta, boolean decrement) {
+        position =  decrement ? position - servoDelta : position + servoDelta;
         position = Range.clip(position, servoMin, servoMax);
         return position;
     }
