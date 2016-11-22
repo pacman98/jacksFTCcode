@@ -8,7 +8,8 @@ import com.qualcomm.robotcore.util.Range;
  */
 public class MotorFunctions {
 
-    //These are the control variables for the function. They are set in the constructor.
+    //These are the control variables fo.
+    // .r the function. They are set in the constructor.
     private static int motorMin, motorMax, servoMin, servoMax;
     private static double servoDelta;
 
