@@ -93,6 +93,13 @@ public class RGB {
                     return true;
                 }
                 break;
+            case "white":
+               int whiteRed = rgbSensor.red();
+               int whiteGreen = rgbSensor.green();
+               int whiteBlue = rgbSensor.blue();
+                if (whiteRed >= 245 && whiteGreen >= 245 && whiteBlue >= 245) {
+                    return true;
+                }
             default:
                 break;
         }
