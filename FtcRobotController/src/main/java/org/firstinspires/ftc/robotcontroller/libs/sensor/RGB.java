@@ -13,18 +13,18 @@ import com.qualcomm.robotcore.hardware.DigitalChannelController;
 public class RGB {
 
     // References to the hardware devices
-    private static ColorSensor rgbSensor;
-    private static DeviceInterfaceModule cdim;
+    private ColorSensor rgbSensor;
+    private DeviceInterfaceModule cdim;
 
     // HSV value array
-    private static float hsvValues[] = {0F,0F,0F};
+    private float hsvValues[] = {0F,0F,0F};
 
     // The pin that the sensor LED is connected to
-    static final int LED_CHANNEL = 5;
+    final int LED_CHANNEL = 5;
 
     // BASELINE colors for the sensor
-    private static int BASELINE_RED;
-    private static int BASELINE_BLUE;
+    private int BASELINE_RED;
+    private int BASELINE_BLUE;
 
     /**
      * Retrieves references to the sensor and device interface module
@@ -33,7 +33,7 @@ public class RGB {
      * @param sensor Reference to sensor hardware
      * @param dim Reference to the device interface module hardware
      */
-    public static void init(ColorSensor sensor, DeviceInterfaceModule dim) {
+    public void init(ColorSensor sensor, DeviceInterfaceModule dim) {
         rgbSensor = sensor;
         cdim = dim;
 
@@ -53,7 +53,7 @@ public class RGB {
      * @param baseRed Baseline value for red
      * @param baseBlue Baseline value for blue
      */
-    public static void init(ColorSensor sensor, DeviceInterfaceModule dim, int baseRed, int
+    public void init(ColorSensor sensor, DeviceInterfaceModule dim, int baseRed, int
             baseBlue) {
         rgbSensor = sensor;
         cdim = dim;
@@ -70,7 +70,7 @@ public class RGB {
      * Experiemental
      * @return Nothing currently
      */
-    public static int[] calibrate() {
+    public int[] calibrate() {
         return null;
     }
 
@@ -79,7 +79,7 @@ public class RGB {
      * @param color The desired color name
      * @return true is value is above baseline, false if not
      */
-    public static boolean getSensorValue(String color) {
+    public boolean getSensorValue(String color) {
         switch(color) {
             case "red":
                 int red = rgbSensor.red();
@@ -94,9 +94,9 @@ public class RGB {
                 }
                 break;
             case "white":
-               int whiteRed = rgbSensor.red();
-               int whiteGreen = rgbSensor.green();
-               int whiteBlue = rgbSensor.blue();
+                int whiteRed = rgbSensor.red();
+                int whiteGreen = rgbSensor.green();
+                int whiteBlue = rgbSensor.blue();
                 if (whiteRed >= 245 && whiteGreen >= 245 && whiteBlue >= 245) {
                     return true;
                 }
@@ -110,7 +110,7 @@ public class RGB {
      * Transforms the current reading of the sensor into a hexadecimal value
      * @return The array of hex values
      */
-    public static float[] normalize() {
+    public float[] normalize() {
         Color.RGBToHSV((rgbSensor.red() * 255) / 800, (rgbSensor.green() * 255) / 800, (rgbSensor
                 .blue() * 255) / 800, hsvValues);
         return hsvValues;
@@ -120,7 +120,7 @@ public class RGB {
      * Sets the state of the LED
      * @param state Boolean, on (true) or off (false)
      */
-    public static void setLED(boolean state) {
+    public void setLED(boolean state) {
         cdim.setDigitalChannelState(LED_CHANNEL, state);
     }
 }
