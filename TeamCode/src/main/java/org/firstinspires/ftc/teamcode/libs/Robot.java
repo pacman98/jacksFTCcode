@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
+import com.qualcomm.robotcore.hardware.configuration.LegacyModuleControllerConfiguration;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.*;
 
@@ -16,13 +17,21 @@ public class Robot {
     // Reference to the hardware map
     public HardwareMap hardwareMap;
 
-    // References to the motor controller
-    public DcMotorController ctrlDriveMotor, ctrlActuatorMotor;
-    public ServoController ctrlWheelServo, ctrlArmServo;
+    // Reference to the device interface module
+    public DeviceInterfaceModule dim;
 
-    // Refernces to the different motors and servos
+    // References to the motor controller
+    public DcMotorController ctrlDriveMotor, ctrlFlyWheelMotor, ctrlActuatorMotor;
+    public ServoController ctrlWheelServo, ctrlArmServo;
+    public LegacyModule ctrlActuatorMotorLegacy;
+//    public LegacyModuleControllerConfiguration ctrlActuatorMotor;
+
+    // References to the different motors and servos
     public DcMotor motorDriveLeft, motorDriveRight, motorFlyLeft, motorFlyRight, motorIntakeElevator, motorLift;
     public Servo servoFlyAngle, servoLeftWheel, servoRightWheel, servoLeftArm, servoRightArm, servoFlip;
+
+    // References to sensors
+    public ColorSensor colorLine, colorBeacon;
 
     /**
      * Robot class constructor
@@ -33,6 +42,9 @@ public class Robot {
         hardwareMap = hwMap;
 
         ctrlDriveMotor = hardwareMap.dcMotorController.get("drive_motor_ctrl");
+        ctrlFlyWheelMotor = hardwareMap.dcMotorController.get("fly_motor_ctrl");
+
+        ctrlActuatorMotorLegacy = hardwareMap.legacyModule.get("actuator_motor_legacy");
         ctrlActuatorMotor = hardwareMap.dcMotorController.get("actuator_motor_ctrl");
 
         ctrlWheelServo = hardwareMap.servoController.get("wheel_servo_ctrl");
@@ -48,20 +60,23 @@ public class Robot {
         motorIntakeElevator = hardwareMap.dcMotor.get("intake_elevator");
         motorLift = hardwareMap.dcMotor.get("lift");
 
-        servoFlyAngle = hardwareMap.servo.get("fly_angle");
-        servoLeftWheel = hardwareMap.servo.get("left_wheel");
-        servoRightWheel = hardwareMap.servo.get("right_wheel");
+//        servoFlyAngle = hardwareMap.servo.get("fly_angle");
+//        servoLeftWheel = hardwareMap.servo.get("left_wheel");
+//        servoRightWheel = hardwareMap.servo.get("right_wheel");
+//
+//        servoLeftArm = hardwareMap.servo.get("left_arm");
+//        servoRightArm = hardwareMap.servo.get("right_arm");
+//        servoFlip = hardwareMap.servo.get("flip");
 
-        servoLeftArm = hardwareMap.servo.get("left_arm");
-        servoRightArm = hardwareMap.servo.get("right_arm");
-        servoFlip = hardwareMap.servo.get("flip");
+        colorLine = hardwareMap.colorSensor.get("color_line");
+        colorBeacon = hardwareMap.colorSensor.get("color_beacon");
     }
 
     //any other hardware methods go here
 
     public void setArms(double position) {
-        servoLeftArm.setPosition(position);
-        servoRightArm.setPosition(position);
+//        servoLeftArm.setPosition(position);
+//        servoRightArm.setPosition(position);
     }
 }
 

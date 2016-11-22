@@ -122,13 +122,13 @@ public class Teleop10794 extends OpMode
         if (gamepad2.a) {
             servoStateArms = !servoStateArms;
         }
-        if (gamepad2.b) {
+        if (gamepad2.y) {
             servoStateFlip = !servoStateFlip;
         }
         if (gamepad2.x) {
             //Automatic fire -- separate targeting class
         }
-        if (gamepad2.y) {
+        if (gamepad2.b) {
             robot.motorIntakeElevator.setPower(0);
         }
         if (gamepad2.dpad_up) {
@@ -150,10 +150,12 @@ public class Teleop10794 extends OpMode
             servoPositionFlyAngle = MotorFunctions.servoIncrement(servoPositionFlyAngle);
         }
         if (gamepad2.left_trigger > 0.1) {
-            robot.motorFlyLeft.setPower(gamepad2.left_trigger);
+            robot.motorFlyLeft.setPower(0);
+            robot.motorFlyRight.setPower(0);
         }
         if (gamepad2.right_trigger > 0.1) {
-            robot.motorFlyRight.setPower(gamepad2.right_trigger);
+            robot.motorFlyRight.setPower(1.2);
+            robot.motorFlyLeft.setPower(1.2);
         }
         if (gamepad2.left_stick_y > 0.25) {
             servoPositionFlyAngle = MotorFunctions.servoIncrement(servoPositionFlyAngle);
@@ -162,13 +164,13 @@ public class Teleop10794 extends OpMode
         /**
          * Set robot servos to binary values
          */
-        robot.setArms(servoStateArms ? MotorFunctions.servo(1) : MotorFunctions.servo(0));
-        robot.servoFlip.setPosition(servoStateFlip ? MotorFunctions.servo(1) : MotorFunctions.servo(0));
+//        robot.setArms(servoStateArms ? MotorFunctions.servo(1) : MotorFunctions.servo(0));
+//        robot.servoFlip.setPosition(servoStateFlip ? MotorFunctions.servo(1) : MotorFunctions.servo(0));
 
         /**
          * Sets the position for the manual fly wheel
          */
-        robot.servoFlyAngle.setPosition(servoPositionFlyAngle);
+//        robot.servoFlyAngle.setPosition(servoPositionFlyAngle);
     }
 
     /**
