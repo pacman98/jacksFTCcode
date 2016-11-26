@@ -119,6 +119,8 @@ public class Teleop10794 extends OpMode
         /**
          * Gamepad 2
          */
+        robot.motorLift.setPower(MotorFunctions.dcMotor(gamepad2.right_stick_y));
+
         if (gamepad2.a) {
             servoStateArms = !servoStateArms;
         }
@@ -170,7 +172,7 @@ public class Teleop10794 extends OpMode
         /**
          * Sets the position for the manual fly wheel
          */
-//        robot.servoFlyAngle.setPosition(servoPositionFlyAngle);
+        robot.servoFlyAngle.setPosition(servoPositionFlyAngle);
     }
 
     /**

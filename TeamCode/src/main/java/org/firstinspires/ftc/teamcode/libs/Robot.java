@@ -41,6 +41,8 @@ public class Robot {
     public Robot(HardwareMap hwMap) {
         hardwareMap = hwMap;
 
+        dim = hardwareMap.deviceInterfaceModule.get("dim");
+
         ctrlDriveMotor = hardwareMap.dcMotorController.get("drive_motor_ctrl");
         ctrlFlyWheelMotor = hardwareMap.dcMotorController.get("fly_motor_ctrl");
 
@@ -52,7 +54,7 @@ public class Robot {
 
         motorDriveLeft = hardwareMap.dcMotor.get("drive_left");
         motorDriveRight = hardwareMap.dcMotor.get("drive_right");
-        motorDriveLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorDriveRight.setDirection(DcMotor.Direction.REVERSE);
 
         motorFlyLeft = hardwareMap.dcMotor.get("fly_left");
         motorFlyRight = hardwareMap.dcMotor.get("fly_right");
@@ -60,7 +62,7 @@ public class Robot {
         motorIntakeElevator = hardwareMap.dcMotor.get("intake_elevator");
         motorLift = hardwareMap.dcMotor.get("lift");
 
-//        servoFlyAngle = hardwareMap.servo.get("fly_angle");
+        servoFlyAngle = hardwareMap.servo.get("fly_angle");
 //        servoLeftWheel = hardwareMap.servo.get("left_wheel");
 //        servoRightWheel = hardwareMap.servo.get("right_wheel");
 //
@@ -69,7 +71,7 @@ public class Robot {
 //        servoFlip = hardwareMap.servo.get("flip");
 
         colorLine = hardwareMap.colorSensor.get("color_line");
-        colorBeacon = hardwareMap.colorSensor.get("color_beacon");
+//        colorBeacon = hardwareMap.colorSensor.get("color_beacon");
     }
 
     //any other hardware methods go here

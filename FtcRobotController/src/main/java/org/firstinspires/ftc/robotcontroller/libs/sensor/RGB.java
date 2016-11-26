@@ -97,7 +97,7 @@ public class RGB {
                 int whiteRed = rgbSensor.red();
                 int whiteGreen = rgbSensor.green();
                 int whiteBlue = rgbSensor.blue();
-                if (whiteRed >= 245 && whiteGreen >= 245 && whiteBlue >= 245) {
+                if (whiteRed >= 250 && whiteGreen >= 250 && whiteBlue >= 250) {
                     return true;
                 }
             default:
@@ -122,5 +122,6 @@ public class RGB {
      */
     public void setLED(boolean state) {
         cdim.setDigitalChannelState(LED_CHANNEL, state);
+        rgbSensor.enableLed(state);
     }
 }

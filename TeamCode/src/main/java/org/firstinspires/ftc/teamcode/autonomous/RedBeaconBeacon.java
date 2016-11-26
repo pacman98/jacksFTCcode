@@ -32,8 +32,12 @@ public class RedBeaconBeacon extends LinearOpMode {
 
         robot = new Robot(hardwareMap);
         motorFunctions = new MotorFunctions(-1, 1, 0, 1, .1);
-        colorLine.init(robot.colorLine, robot.dim);
-        colorBeacon.init(robot.colorBeacon, robot.dim);
+        colorLine = new RGB();
+
+        if (robot.colorLine == null) { telemetry.addData("Color Sensor", "NULL"); stop();}
+        else if (robot.dim == null) { telemetry.addData("DIM", "NULL"); stop(); }
+        else { colorLine.init(robot.colorLine, robot.dim); }
+//        colorBeacon.init(robot.colorBeacon, robot.dim);
 
 
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
@@ -46,11 +50,18 @@ public class RedBeaconBeacon extends LinearOpMode {
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) { //change to if statement, if it runs more than once.
+        if (opModeIsActive()) { //change to if statement, if it runs more than once.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Current Reading:", robot.colorLine.red() + ", " + robot
+                    .colorLine.green() + ", " + robot.colorLine.blue());
             telemetry.update();
+            colorLine.setLED(false);
+            sleep(5000);
 
             while (!colorLine.getSensorValue("white")) {
+                telemetry.addData("Current Reading:", robot.colorLine.red() + ", " + robot
+                        .colorLine.green() + ", " + robot.colorLine.blue());
+                telemetry.update();
                 robot.motorDriveLeft.setPower(-.85);
                 robot.motorDriveRight.setPower(-.85);
             }
@@ -69,13 +80,13 @@ public class RedBeaconBeacon extends LinearOpMode {
 
             sleep(250);
 
-            if (colorBeacon.getSensorValue("red")) {
-                //actuate on the button
-            } else {
-                //actuate on the other button
-            }
+//            if (colorBeacon.getSensorValue("red")) {
+//                //actuate on the button
+//            } else {
+//                //actuate on the other button
+//            }
 
-            //insert next becon/shoot
+            //insert next beacon/shoot
         }
     }
 }
