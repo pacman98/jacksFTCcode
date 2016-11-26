@@ -20,11 +20,13 @@ import org.firstinspires.ftc.teamcode.libs.Robot;
 @Autonomous(name="Red 2 Beacon", group="Autonmous: Red")
 //@Disabled
 public class RedBeaconBeacon extends LinearOpMode {
-    Robot robot   = new Robot(hardwareMap);
+
+    private Robot robot;
+
     private ElapsedTime runtime = new ElapsedTime();
 
 
-    static final double     COUNTS_PER_MOTOR_REV    = 280 ;    // eg: TETRIX Motor Encoder
+    static final double     COUNTS_PER_MOTOR_REV    = 1120 ;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
@@ -36,7 +38,7 @@ public class RedBeaconBeacon extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
+        robot = new Robot(hardwareMap);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
         telemetry.update();

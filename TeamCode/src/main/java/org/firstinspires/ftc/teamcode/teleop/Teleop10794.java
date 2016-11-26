@@ -40,7 +40,7 @@ public class Teleop10794 extends OpMode
          * Robot hardware and motor functions
          */
         robot = new Robot(hardwareMap);
-        motorFunctions = new MotorFunctions(-1, 1, 0, 1, .1);
+        motorFunctions = new MotorFunctions(-1, 1, 0, 1, .001);
         //set servo position either or in robot
     }
 
