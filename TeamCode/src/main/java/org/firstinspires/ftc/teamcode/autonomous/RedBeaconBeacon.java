@@ -9,84 +9,218 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.libs.MotorFunctions;
 import org.firstinspires.ftc.robotcontroller.libs.sensor.RGB;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.libs.Robot;
 
 /**
  *
  * Created by Jack Packham on 11/22/16
  */
-@Autonomous(name="Red 2 Beacon Overlord", group="Red Autonomous")
+
+@Autonomous(name="Red 2 Beacon", group="Autonmous: Red")
 //@Disabled
 public class RedBeaconBeacon extends LinearOpMode {
-
-    /* Declare OpMode members. */
+    Robot robot   = new Robot(hardwareMap);
     private ElapsedTime runtime = new ElapsedTime();
-    private Robot robot;
-    private MotorFunctions motorFunctions;
-    private RGB colorLine, colorBeacon;
+
+
+    static final double     COUNTS_PER_MOTOR_REV    = 280 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+
+
+    static final double     FORWARD_SPEED = 0.9;
+    static final double     TURN_SPEED    = 0.5;
 
     @Override
     public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
+
+        // Send telemetry message to signify robot waiting;
+        telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
-
-        robot = new Robot(hardwareMap);
-        motorFunctions = new MotorFunctions(-1, 1, 0, 1, .1);
-        colorLine = new RGB();
-
-        if (robot.colorLine == null) { telemetry.addData("Color Sensor", "NULL"); stop();}
-        else if (robot.dim == null) { telemetry.addData("DIM", "NULL"); stop(); }
-        else { colorLine.init(robot.colorLine, robot.dim); }
-//        colorBeacon.init(robot.colorBeacon, robot.dim);
-
-
-        /* eg: Initialize the hardware variables. Note that the strings used here as parameters
-         * to 'get' must correspond to the names assigned during the robot configuration
-         * step (using the FTC Robot Controller app on the phone).
-         */
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+
+        // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
+
+        //Step 1: Go fowards for a few seconds at full speed until turning point
+//        robot.motorDriveLeft.setPower(FORWARD_SPEED);
+//        robot.motorDriveRight.setPower(FORWARD_SPEED);
+//        runtime.reset();
+//        while (opModeIsActive() && runtime.seconds() < 1.5) {
+//            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+//            telemetry.update();
+//        }
+        encoderDrive(1, 64, 64, 10);
+        //Step 2: Turn about 45 degrees
+        robot.motorDriveLeft.setPower(TURN_SPEED);
+        robot.motorDriveRight.setPower(0);
         runtime.reset();
-
-        // run until the end of the match (driver presses STOP)
-        if (opModeIsActive()) { //change to if statement, if it runs more than once.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Current Reading:", robot.colorLine.red() + ", " + robot
-                    .colorLine.green() + ", " + robot.colorLine.blue());
+        while (opModeIsActive() && runtime.seconds() < .5) {
+            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
             telemetry.update();
-            colorLine.setLED(false);
-            sleep(5000);
+        }
+        //Step 3: Go forwards to first beacon
+//        robot.motorDriveLeft.setPower(TURN_SPEED);
+//        robot.motorDriveRight.setPower(TURN_SPEED);
+//        runtime.reset();
+//        while (opModeIsActive() && runtime.seconds() < .5) {
+//            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+//            telemetry.update();
+//        }
+        encoderDrive(1, 7, 7, 10);
+        //Step 4: Activate Beacons
+        robot.motorDriveLeft.setPower(0);
+        robot.motorDriveRight.setPower(0);
+        runtime.reset();
+        while (opModeIsActive() && runtime.seconds() < 5) {
+            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+        //Step 5: Go forwards to second beacon
+//        robot.motorDriveLeft.setPower(FORWARD_SPEED);
+//        robot.motorDriveRight.setPower(FORWARD_SPEED);
+//        runtime.reset();
+//        while (opModeIsActive() && runtime.seconds() < 2) {
+//            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+//            telemetry.update();
+//        }
+        encoderDrive(1, 39, 39, 10);
+        //Step 6: Activate beacon
+        robot.motorDriveLeft.setPower(0);
+        robot.motorDriveRight.setPower(0);
+        runtime.reset();
+        while (opModeIsActive() && runtime.seconds() < 5) {
+            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+        //Step 7: Turn 285 degrees
+        robot.motorDriveLeft.setPower(TURN_SPEED);
+        robot.motorDriveRight.setPower(0);
+        runtime.reset();
+        while (opModeIsActive() && runtime.seconds() < .5) {
+            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+        //Step 8: Drive forward
+        robot.motorDriveLeft.setPower(FORWARD_SPEED);
+        robot.motorDriveRight.setPower(FORWARD_SPEED);
+        runtime.reset();
+        while (opModeIsActive() && runtime.seconds() < .5) {
+            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+        //Step 9: Shoot both balls
+        robot.motorFlyLeft.setPower(1);
+        robot.motorFlyRight.setPower(1);
+        robot.motorIntakeElevator.setPower(.85);
+        runtime.reset();
+        while (opModeIsActive() && runtime.seconds() < 7) {
+            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+        //Step 10: Drive forward and park
+        robot.motorDriveLeft.setPower(FORWARD_SPEED);
+        robot.motorDriveRight.setPower(FORWARD_SPEED);
+        runtime.reset();
+        while (opModeIsActive() && runtime.seconds() < .5) {
+            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
 
-            while (!colorLine.getSensorValue("white")) {
-                telemetry.addData("Current Reading:", robot.colorLine.red() + ", " + robot
-                        .colorLine.green() + ", " + robot.colorLine.blue());
+        robot.motorDriveLeft.setPower(0);
+        robot.motorDriveRight.setPower(0);
+
+
+
+//        // Step 1:  Drive forward for 3 seconds
+//        robot.leftMotor.setPower(FORWARD_SPEED);
+//        robot.rightMotor.setPower(FORWARD_SPEED);
+//        runtime.reset();
+//        while (opModeIsActive() && (runtime.seconds() < 3.0)) {
+//            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+//            telemetry.update();
+//        }
+//
+//        // Step 2:  Spin right for 1.3 seconds
+//        robot.leftMotor.setPower(TURN_SPEED);
+//        robot.rightMotor.setPower(-TURN_SPEED);
+//        runtime.reset();
+//        while (opModeIsActive() && (runtime.seconds() < 1.3)) {
+//            telemetry.addData("Path", "Leg 2: %2.5f S Elapsed", runtime.seconds());
+//            telemetry.update();
+//        }
+//
+//        // Step 3:  Drive Backwards for 1 Second
+//        robot.leftMotor.setPower(-FORWARD_SPEED);
+//        robot.rightMotor.setPower(-FORWARD_SPEED);
+//        runtime.reset();
+//        while (opModeIsActive() && (runtime.seconds() < 1.0)) {
+//            telemetry.addData("Path", "Leg 3: %2.5f S Elapsed", runtime.seconds());
+//            telemetry.update();
+//        }
+//
+//        // Step 4:  Stop and close the claw.
+//        robot.leftMotor.setPower(0);
+//        robot.rightMotor.setPower(0);
+//        robot.leftClaw.setPosition(1.0);
+//        robot.rightClaw.setPosition(0.0);
+//
+//        telemetry.addData("Path", "Complete");
+//        telemetry.update();
+//        sleep(1000);
+    }
+
+    public void encoderDrive(double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newLeftTarget = robot.motorDriveLeft.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightTarget = robot.motorDriveRight.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            robot.motorDriveLeft.setTargetPosition(newLeftTarget);
+            robot.motorDriveRight.setTargetPosition(newRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            robot.motorDriveLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.motorDriveRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            robot.motorDriveLeft.setPower(-Math.abs(speed));
+            robot.motorDriveRight.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.motorDriveLeft.isBusy() && robot.motorDriveRight.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d",
+                        robot.motorDriveLeft.getCurrentPosition(),
+                        robot.motorDriveRight.getCurrentPosition());
                 telemetry.update();
-                robot.motorDriveLeft.setPower(-.85);
-                robot.motorDriveRight.setPower(-.85);
             }
+
+            // Stop all motion;
             robot.motorDriveLeft.setPower(0);
             robot.motorDriveRight.setPower(0);
 
-            sleep(250);
+            // Turn off RUN_TO_POSITION
+            robot.motorDriveLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.motorDriveRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            robot.motorDriveLeft.setPower(.85);
-            robot.motorDriveRight.setPower(-.85);
-
-            sleep(500);
-
-            robot.motorDriveLeft.setPower(-.85);
-            robot.motorDriveRight.setPower(-.85);
-
-            sleep(250);
-
-//            if (colorBeacon.getSensorValue("red")) {
-//                //actuate on the button
-//            } else {
-//                //actuate on the other button
-//            }
-
-            //insert next beacon/shoot
+            //  sleep(250);   // optional pause after each move
         }
     }
 }
+
