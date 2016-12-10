@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.libs;
 
 import com.qualcomm.hardware.adafruit.AdafruitI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.I2cAddr;
@@ -25,7 +26,7 @@ import java.util.concurrent.locks.Lock;
 
 @TeleOp(name="RGB Calibration", group="Iterative Opmode")  // @Autonomous(...) is the other common
 // choice
-//@Disabled
+@Disabled
 public class RGBCalibration extends OpMode implements I2cPortReadyCallback {
 
     // IMPORTANT!

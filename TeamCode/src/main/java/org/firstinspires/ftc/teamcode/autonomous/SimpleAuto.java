@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode.libs.Robot;
  * Created by Natalie on 11/6/16.
  */
 
-@Autonomous(name="Red 2 Beacon", group="Autonmous: Red")
-public class RedBeaconBeacon extends LinearOpMode {
+@Autonomous(name="Simple 30/45 pt", group="Autonmous")
+public class SimpleAuto extends LinearOpMode {
 
     private Robot robot;
 
@@ -32,7 +32,7 @@ public class RedBeaconBeacon extends LinearOpMode {
         robot.servoLeftWheel.setPosition(35);
         robot.servoRightWheel.setPosition(75);
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "2 Beacon Ready to run");    //
+        telemetry.addData("Status", "Simple Ready to run");    //
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -55,18 +55,17 @@ public class RedBeaconBeacon extends LinearOpMode {
         telemetry.addData("Status", "Driving");
         telemetry.update();
         encoderDrive(1.0, 25, 25, 1);
+//
+//        robot.motorDriveLeft.setPower(1);
+//        robot.motorDriveRight.setPower(-1);
+//        sleep(50); //encoderTurn
 
-        robot.motorDriveLeft.setPower(1);
-        robot.motorDriveRight.setPower(-1);
-        sleep(150); //encoderTurn
+        encoderDrive(1.0, 31, 31, 1);
+//        robot.motorDriveLeft.setPower(-1);
+//        robot.motorFlyRight.setPower(1);
+//        sleep(50); //encoderTurn
 
-
-        robot.motorDriveLeft.setPower(0);
-        robot.motorDriveRight.setPower(0);
-
-        telemetry.addData("Status", "85 Driving");
-        telemetry.update();
-        encoderDrive(1.0, 85, 85, 1);
+//        encoderDrive(1, -10, -10, 1);
     }
 
     public void encoderDrive(double speed,

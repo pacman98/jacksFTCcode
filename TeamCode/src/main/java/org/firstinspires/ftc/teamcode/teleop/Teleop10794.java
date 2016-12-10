@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.libs.Robot;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@TeleOp(name="10794 Teleop", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="10794 Teleop", group="Teleop")  // @Autonomous(...) is the other common choice
 //@Disabled
 public class Teleop10794 extends OpMode
 {
@@ -26,7 +26,9 @@ public class Teleop10794 extends OpMode
 
     private float joystick1L_y, joystick2L_y, joystick1R_y, joystick2R_y;
 
-    private boolean servoStateArms, servoStateFlip;
+    private boolean servoStateLeftArm = false, servoStateRightArm = false, servoStateLeftWheel =
+            true,
+            servoStateRightWheel = true;
     private double servoPositionFlyAngle;
     /*
      * Code to run ONCE when the driver hits INIT
@@ -40,8 +42,13 @@ public class Teleop10794 extends OpMode
          * Robot hardware and motor functions
          */
         robot = new Robot(hardwareMap);
-        motorFunctions = new MotorFunctions(-1, 1, 0, 1, .001);
-        //set servo position either or in robot
+        motorFunctions = new MotorFunctions(-1, 1, 0, 1, .05);
+
+        robot.servoLeftWheel.setPosition(35);
+        robot.servoRightWheel.setPosition(75);
+
+        robot.servoLeftArm.setPosition(0.1);
+        robot.servoRightArm.setPosition(0);
     }
 
     /*
@@ -80,10 +87,20 @@ public class Teleop10794 extends OpMode
          * Gamepad 1
          */
         if (gamepad1.a) {
-            //beacon
+            if(servoStateLeftWheel) {
+                robot.servoLeftWheel.setPosition(35);
+            } else {
+                robot.servoLeftWheel.setPosition(0);
+            }
+            servoStateLeftWheel = !servoStateLeftWheel;
         }
         if (gamepad1.b) {
-            //beacon
+            if(servoStateRightWheel) {
+                robot.servoRightWheel.setPosition(45);
+            } else {
+                robot.servoRightWheel.setPosition(75);
+            }
+            servoStateRightWheel = !servoStateRightWheel;
         }
         if (gamepad1.x) {
             //beacon
@@ -122,13 +139,24 @@ public class Teleop10794 extends OpMode
         robot.motorLift.setPower(MotorFunctions.dcMotor(gamepad2.right_stick_y));
 
         if (gamepad2.a) {
-            servoStateArms = !servoStateArms;
+            if (servoStateLeftArm) {
+                robot.servoLeftArm.setPosition(0);
+            } else {
+                robot.servoLeftArm.setPosition(.1);
+            }
+            servoStateLeftArm = !servoStateLeftArm;
         }
         if (gamepad2.y) {
-            servoStateFlip = !servoStateFlip;
+            if (servoStateRightArm) {
+                robot.servoRightArm.setPosition(0);
+            } else {
+                robot.servoRightArm.setPosition(.75);
+            }
+            servoStateRightArm = !servoStateRightArm;
         }
         if (gamepad2.x) {
             //Automatic fire -- separate targeting class
+            robot.servoFeed.setPosition(-.1);
         }
         if (gamepad2.b) {
             robot.motorIntakeElevator.setPower(0);
@@ -140,10 +168,10 @@ public class Teleop10794 extends OpMode
             robot.motorIntakeElevator.setPower(-.85);
         }
         if (gamepad2.dpad_left) {
-            //not in use
+            robot.servoFeed.setPosition(-1);
         }
         if (gamepad2.dpad_right) {
-            //not in use
+            robot.servoFeed.setPosition(1);
         }
         if (gamepad2.left_bumper) {
             servoPositionFlyAngle = MotorFunctions.servoDecrement(servoPositionFlyAngle);
@@ -156,11 +184,11 @@ public class Teleop10794 extends OpMode
             robot.motorFlyRight.setPower(0);
         }
         if (gamepad2.right_trigger > 0.1) {
-            robot.motorFlyRight.setPower(1.2);
-            robot.motorFlyLeft.setPower(1.2);
+            robot.motorFlyRight.setPower(1);
+            robot.motorFlyLeft.setPower(.9);
         }
         if (gamepad2.left_stick_y > 0.25) {
-            servoPositionFlyAngle = MotorFunctions.servoIncrement(servoPositionFlyAngle);
+            servoPositionFlyAngle = MotorFunctions.servo(servoPositionFlyAngle, .01, 0.1, .85);
         }
 
         /**
