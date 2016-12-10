@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.util.Range;
  */
 public class MotorFunctions {
 
-    //These are the control variables fo.
-    // .r the function. They are set in the constructor.
-    private static int motorMin, motorMax, servoMin, servoMax;
+    //These are the control variables for the function. They are set in the constructor.
+    private static int motorMin, motorMax;
+    private static double servoMin, servoMax;
     private static double servoDelta;
 
     /**
@@ -22,7 +22,7 @@ public class MotorFunctions {
      * @param pServoMax the maximum value of the servo
      * @param pServoDelta the amount by which to change the servo position
      */
-    public MotorFunctions(int pMotorMin, int pMotorMax, int pServoMin, int pServoMax, double
+    public MotorFunctions(int pMotorMin, int pMotorMax, double pServoMin, double pServoMax, double
             pServoDelta) {
         motorMin = pMotorMin;
         motorMax = pMotorMax;
@@ -50,8 +50,8 @@ public class MotorFunctions {
      * @param maxRange The maximum value of the joystick
      * @return float power level
      */
-    public static float dcMotor(float joystickValue, int minRange, int maxRange) {
-        joystickValue = Range.clip(joystickValue, minRange, maxRange);
+    public static float dcMotor(float joystickValue, double minRange, double maxRange) {
+        joystickValue = (float)Range.clip(joystickValue, minRange, maxRange);
         joystickValue = (float)scaleInput(joystickValue);
         return joystickValue;
     }
@@ -119,7 +119,7 @@ public class MotorFunctions {
      * @param maxRange The maximum servo position
      * @return double servo position
      */
-    public static double servo(double position, int minRange, int maxRange ) {
+    public static double servo(double position, double minRange, double maxRange ) {
         position += servoDelta;
         position = Range.clip(position, minRange, maxRange);
         return position;
@@ -133,7 +133,8 @@ public class MotorFunctions {
      * @param maxRange The maximum servo position
      * @return double servo position
      */
-    public static double servo(double position, double servoDelta, int minRange, int maxRange) {
+    public static double servo(double position, double servoDelta, double minRange, double
+            maxRange) {
         position += servoDelta;
         position = Range.clip(position, minRange, maxRange);
         return position;
