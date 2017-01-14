@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.libs;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
@@ -8,6 +10,9 @@ import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.hardware.configuration.LegacyModuleControllerConfiguration;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.*;
+import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 
 /**
  * Sets up hardware
@@ -29,10 +34,17 @@ public class Robot {
     // References to the different motors and servos
     public DcMotor motorDriveLeft, motorDriveRight, motorFlyLeft, motorFlyRight, motorIntakeElevator, motorLift;
     public Servo servoFlyAngle, servoLeftWheel, servoRightWheel, servoLeftArm, servoRightArm,
-    servoFlip, servoFeed;
+    servoFlip, servoFeed, servoShoulder, servoElbow;
 
     // References to sensors
     public ColorSensor colorLine, colorBeacon;
+    public ModernRoboticsI2cGyro gyro;
+    public UltrasonicSensor rigtSonar;
+    public UltrasonicSensor leftSonar;
+    public OpticalDistanceSensor lineDetector;
+    public ColorSensor colorLeft;
+    public ColorSensor colorRight;
+
 
     /**
      * Robot class constructor
@@ -67,13 +79,26 @@ public class Robot {
         servoLeftWheel = hardwareMap.servo.get("wheel_left");
         servoRightWheel = hardwareMap.servo.get("wheel_right");
         servoFeed = hardwareMap.servo.get("intake_wheel");
-//
+
         servoLeftArm = hardwareMap.servo.get("left_arm");
         servoRightArm = hardwareMap.servo.get("right_arm");
 //        servoFlip = hardwareMap.servo.get("flip");
 
+        servoShoulder = hardwareMap.servo.get("shoulder");
+        servoElbow = hardwareMap.servo.get("elbow");
+
 //        colorLine = hardwareMap.colorSensor.get("color_line");
         colorBeacon = hardwareMap.colorSensor.get("color_beacon");
+        //initalazing ultrasonic sensors
+        rigtSonar = hardwareMap.ultrasonicSensor.get("rightSonar");
+        leftSonar = hardwareMap.ultrasonicSensor.get("leftSonar");
+        //light sensor in the buttom
+        lineDetector = hardwareMap.opticalDistanceSensor.get("lineDetector");
+        colorLeft = hardwareMap.colorSensor.get("colorLeft");
+        colorRight = hardwareMap.colorSensor.get("colorRight");
+
+        //getting gyro
+        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
     }
 
     //any other hardware methods go here

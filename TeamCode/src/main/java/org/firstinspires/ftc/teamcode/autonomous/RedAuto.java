@@ -7,11 +7,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.libs.MotorFunctions;
 import org.firstinspires.ftc.teamcode.libs.Robot;
+import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 
 
-
-@Autonomous(name="Simple 30/45 pt", group="Autonmous")
-public class SimpleAuto extends LinearOpMode {
+@Autonomous(name="RedAuto", group="Autonmous")
+public class RedAuto extends LinearOpMode {
 
     private Robot robot;
 
@@ -26,6 +27,8 @@ public class SimpleAuto extends LinearOpMode {
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
 
+    static final int blue = {};
+    static final int red = {};
     @Override
     public void runOpMode() {
         robot = new Robot(hardwareMap);
@@ -41,6 +44,8 @@ public class SimpleAuto extends LinearOpMode {
          */
         robot = new Robot(hardwareMap);
         motorFunctions = new MotorFunctions(-1, 1, 0, 1, .05);
+        //calibrasting a gyroscope
+        robot.gyro.calibrate();
 
         //servo wheels are flipped in configuration file
         robot.servoLeftWheel.setPosition(.45);
@@ -78,9 +83,24 @@ public class SimpleAuto extends LinearOpMode {
 
         telemetry.addData("Status", "Driving");
         telemetry.update();
-        encoderDrive(1.0, 25, 25, 1);
+        encoderDrive(1.0, 27, 27, 1);
+        /*robot.motorDriveRight.setPower(1.0);
+        robot.motorDriveLeft.setPower(-1.0);*/
 
         encoderDrive(1.0, 31, 31, 1);
+        tankGyroTurn(-90, 1.0);
+        encoderDrive(1.0, 48, 48, 1);
+        tankGyroTurn(90, 1.0);
+        if(robot.leftSonar.getUltrasonicLevel() > 7.62)
+        {
+            tankGyroTurn(-14);
+            encoderDrive(0.3, 1, 1, 1);
+            tankGyroTurn(14);
+
+        }
+
+
+
     }
 
     public void encoderDrive(double speed,
@@ -131,4 +151,48 @@ public class SimpleAuto extends LinearOpMode {
             //  sleep(250);   // optional pause after each move
         }
     }
+
+    public void tankGyroTurn(int degrees, double speed)
+    {
+        boolean goalReached()
+        {
+            if (robot.gyro.getHeading() == degrees) {
+                return true;
+            }
+            return false;
+        }
+        while(!goalReached && degrees > 0)
+            {
+                robot.motorDriveLeft.setPower(speed);
+                robot.motorDriveRight.setPower(-speed);
+            }
+        while(!goalReached && degrees < 0)
+            {
+                robot.motorDriveLeft.setPower(-speed);
+                robot.motorDriveRight.setPower(speed);
+            }
+        robot.motorDriveLeft.setPower(0);
+        robot.motorDriveRight.setPower(0);
+    }
+
+    }
+    public void pressTheButton()
+    {
+        boolean found = false;
+        while (opModeIsActive() && !found)
+        {
+            robot.motorDriveRight.setPower(1);
+            robot.motorDriveLeft.setPower(1);
+            if (robot.lineDetector.getLightDetected() > 0.8) {
+                robot.motorDriveRight.setPower(0);
+                robot.motorDriveLeft.setPower(0);
+                found = true;
+            }
+            idle();
+        }
+
+        if(robot.colorLeft.red() == )
+
+    }
+
 }
