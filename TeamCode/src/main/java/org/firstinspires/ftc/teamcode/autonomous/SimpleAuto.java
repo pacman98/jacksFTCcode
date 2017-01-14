@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcontroller.libs.MotorFunctions;
 import org.firstinspires.ftc.teamcode.libs.Robot;
 
 /**
@@ -18,6 +19,8 @@ public class SimpleAuto extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
+    private MotorFunctions motorFunctions;
+
 
     static final double     COUNTS_PER_MOTOR_REV    = 28 ;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 40 ;     // This is < 1.0 if geared UP
@@ -29,15 +32,37 @@ public class SimpleAuto extends LinearOpMode {
     public void runOpMode() {
         robot = new Robot(hardwareMap);
 
-        robot.servoLeftWheel.setPosition(35);
-        robot.servoRightWheel.setPosition(75);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Simple Ready to run");    //
         telemetry.update();
+        telemetry.addData("Status", "Initialized");
 
+        /**
+         * Initializes the library functions
+         * Robot hardware and motor functions
+         */
+        robot = new Robot(hardwareMap);
+        motorFunctions = new MotorFunctions(-1, 1, 0, 1, .05);
+
+        //servo wheels are flipped in configuration file
+        robot.servoLeftWheel.setPosition(.45);
+        robot.servoRightWheel.setPosition(.25);
+
+        robot.servoLeftArm.setPosition(0);
+        robot.servoRightArm.setPosition(0);
+
+        robot.servoFlyAngle.setPosition(1);
+
+        robot.servoElbow.setPosition(0.95);
+        robot.servoShoulder.setPosition(0.1);
+
+        robot.servoFeed.setPosition(.51);
+
+        telemetry.addData("Servos: ", "Initialized");
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-
+        robot.servoFlyAngle.setPosition(0);
+        sleep(500);
         robot.motorFlyLeft.setPower(.9);
         robot.motorFlyRight.setPower(1);
         sleep(250);
@@ -45,9 +70,10 @@ public class SimpleAuto extends LinearOpMode {
         robot.servoFeed.setPosition(-1);
         telemetry.addData("Status", "Shooting");    //
         telemetry.update();
-        sleep(4500);
+        sleep(5000);
         robot.motorFlyLeft.setPower(0);
         robot.motorFlyRight.setPower(0);
+        sleep(5000);
         robot.motorIntakeElevator.setPower(0);
         robot.servoFeed.setPosition(.1);
         sleep(250);
@@ -55,17 +81,8 @@ public class SimpleAuto extends LinearOpMode {
         telemetry.addData("Status", "Driving");
         telemetry.update();
         encoderDrive(1.0, 25, 25, 1);
-//
-//        robot.motorDriveLeft.setPower(1);
-//        robot.motorDriveRight.setPower(-1);
-//        sleep(50); //encoderTurn
 
         encoderDrive(1.0, 31, 31, 1);
-//        robot.motorDriveLeft.setPower(-1);
-//        robot.motorFlyRight.setPower(1);
-//        sleep(50); //encoderTurn
-
-//        encoderDrive(1, -10, -10, 1);
     }
 
     public void encoderDrive(double speed,

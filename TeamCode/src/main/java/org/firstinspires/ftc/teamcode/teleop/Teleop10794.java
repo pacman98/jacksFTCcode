@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
 import org.firstinspires.ftc.robotcontroller.libs.MotorFunctions;
 
 import org.firstinspires.ftc.teamcode.libs.Robot;
@@ -24,19 +26,18 @@ public class Teleop10794 extends OpMode
     private Robot robot;
     private MotorFunctions motorFunctions;
 
-    private float joystick1L_y, joystick2L_y, joystick1R_y, joystick2R_y;
-
-    private boolean servoStateLeftArm = false, servoStateRightArm = false, servoStateLeftWheel =
-            true,
-            servoStateRightWheel = true;
+    private boolean servoStateLeftArm = false, servoStateRightArm = false,
+            servoStateLeftWheel = false, servoStateRightWheel = false,
+            servoStateShoulder = false, servoStateElbow = false;
     private double servoPositionFlyAngle;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
-        //may wish to pass in telemetry to add telemtry data
+
         /**
          * Initializes the library functions
          * Robot hardware and motor functions
@@ -44,11 +45,20 @@ public class Teleop10794 extends OpMode
         robot = new Robot(hardwareMap);
         motorFunctions = new MotorFunctions(-1, 1, 0, 1, .05);
 
-        robot.servoLeftWheel.setPosition(35);
-        robot.servoRightWheel.setPosition(75);
+        //servo wheels are flipped in configuration file
+        robot.servoLeftWheel.setPosition(.45);
+        robot.servoRightWheel.setPosition(.45);
 
-        robot.servoLeftArm.setPosition(0.1);
+        robot.servoLeftArm.setPosition(0);
         robot.servoRightArm.setPosition(0);
+
+        robot.servoFlyAngle.setPosition(1);
+
+        robot.servoElbow.setPosition(0.95);
+        robot.servoShoulder.setPosition(0.1);
+
+        robot.servoFeed.setPosition(.51);
+        telemetry.addData("Servos: ", "Initialized");
     }
 
     /*
@@ -62,10 +72,14 @@ public class Teleop10794 extends OpMode
 
     /*
      * Code to run ONCE when the driver hits PLAY
-     * We don't need this method
      */
     @Override
     public void start() {
+        robot.servoFlyAngle.setPosition(.5);
+
+        robot.servoLeftWheel.setPosition(.5);
+        robot.servoRightWheel.setPosition(.25);
+
         runtime.reset();
     }
 
@@ -87,26 +101,16 @@ public class Teleop10794 extends OpMode
          * Gamepad 1
          */
         if (gamepad1.a) {
-            if(servoStateLeftWheel) {
-                robot.servoLeftWheel.setPosition(35);
-            } else {
-                robot.servoLeftWheel.setPosition(0);
-            }
-            servoStateLeftWheel = !servoStateLeftWheel;
+            //not in use
         }
         if (gamepad1.b) {
-            if(servoStateRightWheel) {
-                robot.servoRightWheel.setPosition(45);
-            } else {
-                robot.servoRightWheel.setPosition(75);
-            }
-            servoStateRightWheel = !servoStateRightWheel;
+            //not in use
         }
         if (gamepad1.x) {
-            //beacon
+            //not in use
         }
         if (gamepad1.y) {
-            //beacon
+            //not in use
         }
         if (gamepad1.dpad_up) {
             //not in use
@@ -121,16 +125,36 @@ public class Teleop10794 extends OpMode
             //not in use
         }
         if (gamepad1.left_bumper) {
-            //not in use
+            if(servoStateLeftWheel) {
+                robot.servoLeftWheel.setPosition(.45);
+            } else {
+                robot.servoLeftWheel.setPosition(.60);
+            }
+            servoStateLeftWheel = !servoStateLeftWheel;
         }
         if (gamepad1.right_bumper) {
-            //not in use
+            if(servoStateRightWheel) {
+                robot.servoRightWheel.setPosition(.45);
+            } else {
+                robot.servoRightWheel.setPosition(.3);
+            }
+            servoStateRightWheel = !servoStateRightWheel;
         }
         if (gamepad1.left_trigger > 0.25) {
-            //not in use
+            if (servoStateShoulder) {
+                robot.servoShoulder.setPosition(0.1);
+            } else {
+                robot.servoShoulder.setPosition(0.8);
+            }
+            servoStateShoulder = !servoStateShoulder;
         }
         if (gamepad1.right_trigger > 0.25) {
-            //not in use
+            if (servoStateElbow) {
+                robot.servoElbow.setPosition(0.95);
+            } else {
+                robot.servoElbow.setPosition(0.05);
+            }
+            servoStateElbow = !servoStateElbow;
         }
 
         /**
@@ -142,7 +166,7 @@ public class Teleop10794 extends OpMode
             if (servoStateLeftArm) {
                 robot.servoLeftArm.setPosition(0);
             } else {
-                robot.servoLeftArm.setPosition(.1);
+                robot.servoLeftArm.setPosition(.11);
             }
             servoStateLeftArm = !servoStateLeftArm;
         }
@@ -150,13 +174,13 @@ public class Teleop10794 extends OpMode
             if (servoStateRightArm) {
                 robot.servoRightArm.setPosition(0);
             } else {
-                robot.servoRightArm.setPosition(.75);
+                robot.servoRightArm.setPosition(.7);
             }
             servoStateRightArm = !servoStateRightArm;
         }
         if (gamepad2.x) {
             //Automatic fire -- separate targeting class
-            robot.servoFeed.setPosition(-.1);
+            robot.servoFeed.setPosition(.51);
         }
         if (gamepad2.b) {
             robot.motorIntakeElevator.setPower(0);
@@ -168,31 +192,35 @@ public class Teleop10794 extends OpMode
             robot.motorIntakeElevator.setPower(-.85);
         }
         if (gamepad2.dpad_left) {
-            robot.servoFeed.setPosition(-1);
+            robot.servoFeed.setPosition(0);
         }
         if (gamepad2.dpad_right) {
             robot.servoFeed.setPosition(1);
         }
         if (gamepad2.left_bumper) {
             servoPositionFlyAngle = MotorFunctions.servoDecrement(servoPositionFlyAngle);
+            servoPositionFlyAngle = Range.clip(servoPositionFlyAngle, 0.4, 1);
         }
         if (gamepad2.right_bumper) {
             servoPositionFlyAngle = MotorFunctions.servoIncrement(servoPositionFlyAngle);
+            servoPositionFlyAngle = Range.clip(servoPositionFlyAngle, 0.4, 1);
         }
         if (gamepad2.left_trigger > 0.1) {
             robot.motorFlyLeft.setPower(0);
             robot.motorFlyRight.setPower(0);
+            robot.servoFeed.setPosition(.51);
         }
         if (gamepad2.right_trigger > 0.1) {
             robot.motorFlyRight.setPower(1);
             robot.motorFlyLeft.setPower(.9);
+            robot.servoFeed.setPosition(0);
         }
         if (gamepad2.left_stick_y > 0.25) {
-            servoPositionFlyAngle = MotorFunctions.servo(servoPositionFlyAngle, .01, 0.1, .85);
+            servoPositionFlyAngle = MotorFunctions.servo(servoPositionFlyAngle, .01, 0.5, 1);
         }
 
         /**
-         * Set robot servos to binary values
+         * Set robot servos to binary values -- not currently in use
          */
 //        robot.setArms(servoStateArms ? MotorFunctions.servo(1) : MotorFunctions.servo(0));
 //        robot.servoFlip.setPosition(servoStateFlip ? MotorFunctions.servo(1) : MotorFunctions.servo(0));
@@ -201,16 +229,32 @@ public class Teleop10794 extends OpMode
          * Sets the position for the manual fly wheel
          */
         robot.servoFlyAngle.setPosition(servoPositionFlyAngle);
+        sleep(50);
     }
 
     /**
      * Code to run ONCE after STOP is pressed
      * DO NOT USE THIS METHOD!!
+     * Violation of game rules
      */
     @Override
     public void stop() {
 
     }
 
+    /**
+     * Sleeps for the given amount of milliseconds, or until the thread is interrupted. This is
+     * simple shorthand for the operating-system-provided {@link Thread#sleep(long) sleep()} method.
+     *
+     * @param milliseconds amount of time to sleep, in milliseconds
+     * @see Thread#sleep(long)
+     */
+    public final void sleep(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
 
 }

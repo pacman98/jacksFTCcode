@@ -29,7 +29,7 @@ public class Robot {
     // References to the different motors and servos
     public DcMotor motorDriveLeft, motorDriveRight, motorFlyLeft, motorFlyRight, motorIntakeElevator, motorLift;
     public Servo servoFlyAngle, servoLeftWheel, servoRightWheel, servoLeftArm, servoRightArm,
-    servoFlip, servoFeed;
+    servoFlip, servoFeed, servoShoulder, servoElbow;
 
     // References to sensors
     public ColorSensor colorLine, colorBeacon;
@@ -67,10 +67,13 @@ public class Robot {
         servoLeftWheel = hardwareMap.servo.get("wheel_left");
         servoRightWheel = hardwareMap.servo.get("wheel_right");
         servoFeed = hardwareMap.servo.get("intake_wheel");
-//
+
         servoLeftArm = hardwareMap.servo.get("left_arm");
         servoRightArm = hardwareMap.servo.get("right_arm");
 //        servoFlip = hardwareMap.servo.get("flip");
+
+        servoShoulder = hardwareMap.servo.get("shoulder");
+        servoElbow = hardwareMap.servo.get("elbow");
 
 //        colorLine = hardwareMap.colorSensor.get("color_line");
         colorBeacon = hardwareMap.colorSensor.get("color_beacon");
