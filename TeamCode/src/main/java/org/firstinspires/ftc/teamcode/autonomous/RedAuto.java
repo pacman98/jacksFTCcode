@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.libs.MotorFunctions;
@@ -21,14 +23,12 @@ public class RedAuto extends LinearOpMode {
     private MotorFunctions motorFunctions;
 
 
-    static final double     COUNTS_PER_MOTOR_REV    = 28 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 40 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+    static final double COUNTS_PER_MOTOR_REV = 28;    // eg: TETRIX Motor Encoder
+    static final double DRIVE_GEAR_REDUCTION = 40;     // This is < 1.0 if geared UP
+    static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
 
-    static final int blue = {};
-    static final int red = {};
     @Override
     public void runOpMode() {
         robot = new Robot(hardwareMap);
@@ -91,15 +91,15 @@ public class RedAuto extends LinearOpMode {
         tankGyroTurn(-90, 1.0);
         encoderDrive(1.0, 48, 48, 1);
         tankGyroTurn(90, 1.0);
-        if(robot.leftSonar.getUltrasonicLevel() > 7.62)
-        {
-            tankGyroTurn(-14);
+        if (robot.leftSonar.getUltrasonicLevel() > 7.62) {
+            tankGyroTurn(-14, 0.5);
             encoderDrive(0.3, 1, 1, 1);
-            tankGyroTurn(14);
+            tankGyroTurn(14, 0.5);
 
         }
 
-
+        pressTheButton();
+        pressTheButton();
 
     }
 
@@ -113,8 +113,8 @@ public class RedAuto extends LinearOpMode {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftTarget = robot.motorDriveLeft.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = robot.motorDriveRight.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newLeftTarget = robot.motorDriveLeft.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newRightTarget = robot.motorDriveRight.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
             robot.motorDriveLeft.setTargetPosition(newLeftTarget);
             robot.motorDriveRight.setTargetPosition(newRightTarget);
 
@@ -133,8 +133,8 @@ public class RedAuto extends LinearOpMode {
                     (robot.motorDriveLeft.isBusy() && robot.motorDriveRight.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
-                telemetry.addData("Path2",  "Running at %7d :%7d",
+                telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
+                telemetry.addData("Path2", "Running at %7d :%7d",
                         robot.motorDriveLeft.getCurrentPosition(),
                         robot.motorDriveRight.getCurrentPosition());
                 telemetry.update();
@@ -152,35 +152,33 @@ public class RedAuto extends LinearOpMode {
         }
     }
 
-    public void tankGyroTurn(int degrees, double speed)
-    {
-        boolean goalReached()
-        {
-            if (robot.gyro.getHeading() == degrees) {
-                return true;
-            }
-            return false;
+    private boolean goalReached(int degrees) {
+        if (robot.gyro.getHeading() == degrees) {
+            return true;
         }
-        while(!goalReached && degrees > 0)
-            {
-                robot.motorDriveLeft.setPower(speed);
-                robot.motorDriveRight.setPower(-speed);
-            }
-        while(!goalReached && degrees < 0)
-            {
-                robot.motorDriveLeft.setPower(-speed);
-                robot.motorDriveRight.setPower(speed);
-            }
+        return false;
+    }
+
+    public void tankGyroTurn(int degrees, double speed) {
+
+        while (!goalReached(degrees) && degrees > 0) {
+            robot.motorDriveLeft.setPower(speed);
+            robot.motorDriveRight.setPower(-speed);
+            idle();
+        }
+        while (!goalReached(degrees) && degrees < 0) {
+            robot.motorDriveLeft.setPower(-speed);
+            robot.motorDriveRight.setPower(speed);
+            idle();
+        }
         robot.motorDriveLeft.setPower(0);
         robot.motorDriveRight.setPower(0);
     }
 
-    }
-    public void pressTheButton()
-    {
+    public void pressTheButton() {
         boolean found = false;
-        while (opModeIsActive() && !found)
-        {
+        Servo leftArm = robot.servoLeftArm;
+        while (opModeIsActive() && !found) {
             robot.motorDriveRight.setPower(1);
             robot.motorDriveLeft.setPower(1);
             if (robot.lineDetector.getLightDetected() > 0.8) {
@@ -191,8 +189,22 @@ public class RedAuto extends LinearOpMode {
             idle();
         }
 
-        if(robot.colorLeft.red() == )
+        if (robot.colorLeft.red() >= 40) {
+
+            leftArm.setPosition(leftArm.getPosition() + 90);
+            sleep(1000);
+            leftArm.setPosition(leftArm.getPosition() - 90);
+
+        } else {
+            robot.motorDriveRight.setDirection(DcMotorSimple.Direction.REVERSE);
+            robot.motorDriveLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+            encoderDrive(0.5, 5.5, 5.5, 1);
+            robot.motorDriveRight.setDirection(DcMotorSimple.Direction.FORWARD);
+            robot.motorDriveLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+            leftArm.setPosition(leftArm.getPosition() + 90);
+            sleep(1000);
+            leftArm.setPosition(leftArm.getPosition() - 90);
+        }
 
     }
-
 }
