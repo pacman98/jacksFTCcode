@@ -29,7 +29,7 @@ public class Teleop10794 extends OpMode
     private boolean servoStateLeftArm = false, servoStateRightArm = false,
             servoStateLeftWheel = false, servoStateRightWheel = false,
             servoStateShoulder = false, servoStateElbow = false;
-    private double servoPositionFlyAngle;
+    private double servoPositionFlyAngle, servoPositionPlaid = 0;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -47,17 +47,19 @@ public class Teleop10794 extends OpMode
 
         //servo wheels are flipped in configuration file
         robot.servoLeftWheel.setPosition(.45);
-        robot.servoRightWheel.setPosition(.45);
+        robot.servoRightWheel.setPosition(.25);
 
         robot.servoLeftArm.setPosition(0);
-        robot.servoRightArm.setPosition(0);
+        robot.servoRightArm.setPosition(0.7);
 
         robot.servoFlyAngle.setPosition(1);
 
         robot.servoElbow.setPosition(0.95);
         robot.servoShoulder.setPosition(0.1);
 
-        robot.servoFeed.setPosition(.51);
+        robot.servoFeed.setPosition(.498);
+
+        robot.servoPlaid.setPosition(.85);
         telemetry.addData("Servos: ", "Initialized");
     }
 
@@ -79,6 +81,9 @@ public class Teleop10794 extends OpMode
 
         robot.servoLeftWheel.setPosition(.5);
         robot.servoRightWheel.setPosition(.25);
+
+        robot.servoFeed.setPosition(.498);
+        robot.servoPlaid.setPosition(.85);
 
         runtime.reset();
     }
@@ -110,10 +115,20 @@ public class Teleop10794 extends OpMode
             //not in use
         }
         if (gamepad1.y) {
-            //not in use
+            if (servoStateRightArm) {
+                robot.servoRightArm.setPosition(0);
+            } else {
+                robot.servoRightArm.setPosition(.7);
+            }
+            servoStateRightArm = !servoStateRightArm;
         }
         if (gamepad1.dpad_up) {
-            //not in use
+            if (servoStateLeftArm) {
+                robot.servoLeftArm.setPosition(0);
+            } else {
+                robot.servoLeftArm.setPosition(.72);
+            }
+            servoStateLeftArm = !servoStateLeftArm;
         }
         if (gamepad1.dpad_down) {
             //not in use
@@ -134,7 +149,7 @@ public class Teleop10794 extends OpMode
         }
         if (gamepad1.right_bumper) {
             if(servoStateRightWheel) {
-                robot.servoRightWheel.setPosition(.45);
+                robot.servoRightWheel.setPosition(.25);
             } else {
                 robot.servoRightWheel.setPosition(.3);
             }
@@ -163,24 +178,16 @@ public class Teleop10794 extends OpMode
         robot.motorLift.setPower(MotorFunctions.dcMotor(gamepad2.right_stick_y));
 
         if (gamepad2.a) {
-            if (servoStateLeftArm) {
-                robot.servoLeftArm.setPosition(0);
-            } else {
-                robot.servoLeftArm.setPosition(.11);
-            }
-            servoStateLeftArm = !servoStateLeftArm;
+            servoPositionPlaid = MotorFunctions.servoDecrement(servoPositionPlaid);
+            servoPositionPlaid = Range.clip(servoPositionPlaid, 0, .9);
         }
         if (gamepad2.y) {
-            if (servoStateRightArm) {
-                robot.servoRightArm.setPosition(0);
-            } else {
-                robot.servoRightArm.setPosition(.7);
-            }
-            servoStateRightArm = !servoStateRightArm;
+            servoPositionPlaid = MotorFunctions.servoIncrement(servoPositionPlaid);
+            servoPositionPlaid = Range.clip(servoPositionPlaid, 0, .9);
         }
         if (gamepad2.x) {
             //Automatic fire -- separate targeting class
-            robot.servoFeed.setPosition(.51);
+            robot.servoFeed.setPosition(.52);
         }
         if (gamepad2.b) {
             robot.motorIntakeElevator.setPower(0);
@@ -199,16 +206,16 @@ public class Teleop10794 extends OpMode
         }
         if (gamepad2.left_bumper) {
             servoPositionFlyAngle = MotorFunctions.servoDecrement(servoPositionFlyAngle);
-            servoPositionFlyAngle = Range.clip(servoPositionFlyAngle, 0.4, 1);
+            servoPositionFlyAngle = Range.clip(servoPositionFlyAngle, 0.3, 1);
         }
         if (gamepad2.right_bumper) {
             servoPositionFlyAngle = MotorFunctions.servoIncrement(servoPositionFlyAngle);
-            servoPositionFlyAngle = Range.clip(servoPositionFlyAngle, 0.4, 1);
+            servoPositionFlyAngle = Range.clip(servoPositionFlyAngle, 0.3, 1);
         }
         if (gamepad2.left_trigger > 0.1) {
             robot.motorFlyLeft.setPower(0);
             robot.motorFlyRight.setPower(0);
-            robot.servoFeed.setPosition(.51);
+            robot.servoFeed.setPosition(1);
         }
         if (gamepad2.right_trigger > 0.1) {
             robot.motorFlyRight.setPower(1);
@@ -216,7 +223,7 @@ public class Teleop10794 extends OpMode
             robot.servoFeed.setPosition(0);
         }
         if (gamepad2.left_stick_y > 0.25) {
-            servoPositionFlyAngle = MotorFunctions.servo(servoPositionFlyAngle, .01, 0.5, 1);
+            servoPositionFlyAngle = MotorFunctions.servo(servoPositionFlyAngle, .01, 0.3, 1);
         }
 
         /**
@@ -229,6 +236,7 @@ public class Teleop10794 extends OpMode
          * Sets the position for the manual fly wheel
          */
         robot.servoFlyAngle.setPosition(servoPositionFlyAngle);
+        robot.servoPlaid.setPosition(servoPositionPlaid);
         sleep(50);
     }
 
@@ -239,7 +247,7 @@ public class Teleop10794 extends OpMode
      */
     @Override
     public void stop() {
-
+        robot.servoFeed.setPosition(.498);
     }
 
     /**

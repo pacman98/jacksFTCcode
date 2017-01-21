@@ -30,8 +30,6 @@ public class SimpleAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        robot = new Robot(hardwareMap);
-
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Simple Ready to run");    //
         telemetry.update();
@@ -61,6 +59,7 @@ public class SimpleAuto extends LinearOpMode {
         telemetry.addData("Servos: ", "Initialized");
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        robot.motorLift.setPower(0);
         robot.servoFlyAngle.setPosition(0);
         sleep(500);
         robot.motorFlyLeft.setPower(.9);
@@ -73,7 +72,7 @@ public class SimpleAuto extends LinearOpMode {
         sleep(5000);
         robot.motorFlyLeft.setPower(0);
         robot.motorFlyRight.setPower(0);
-        sleep(5000);
+//        sleep(5000); //no idea why this is here
         robot.motorIntakeElevator.setPower(0);
         robot.servoFeed.setPosition(.1);
         sleep(250);

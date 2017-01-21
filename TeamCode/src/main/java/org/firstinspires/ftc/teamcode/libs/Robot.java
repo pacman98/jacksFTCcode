@@ -28,7 +28,8 @@ public class Robot {
 
     // References to the different motors and servos
     public DcMotor motorDriveLeft, motorDriveRight, motorFlyLeft, motorFlyRight, motorIntakeElevator, motorLift;
-    public Servo servoFlyAngle, servoLeftWheel, servoRightWheel, servoLeftArm, servoRightArm,
+    public Servo servoPlaid, servoFlyAngle, servoLeftWheel, servoRightWheel, servoLeftArm,
+            servoRightArm,
     servoFlip, servoFeed, servoShoulder, servoElbow;
 
     // References to sensors
@@ -62,6 +63,8 @@ public class Robot {
 
         motorIntakeElevator = hardwareMap.dcMotor.get("intake_elevator");
         motorLift = hardwareMap.dcMotor.get("lift");
+
+        servoPlaid = hardwareMap.servo.get("plaid_servo");
 
         servoFlyAngle = hardwareMap.servo.get("fly_angle");
         servoLeftWheel = hardwareMap.servo.get("wheel_left");
